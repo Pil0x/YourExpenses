@@ -1,0 +1,99 @@
+﻿@model IEnumerable<ChartModel>
+
+@{
+    var categoryChart = ViewBag.CategoryChart as Dictionary<string, decimal>;
+    ViewData["Title"] = "Dashboard";
+
+}
+
+<div class="d-flex flex-row justify-content-between">
+    <h1>
+        <a asp-action="Index" class="text-reset text-decoration-none" asp-route-year="@ViewBag.PreviousYear">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-arrow-left m-2"></i>
+                <span class="fs-3">PREV</span>
+            </div>
+        </a>
+    </h1>
+    <h1 class="text-center">Dashboard of @ViewBag.Year</h1>
+    <h1>
+        <a asp-action="Index" class="text-reset text-decoration-none" asp-route-year="@ViewBag.NextYear">
+            <div class="d-flex align-items-center">
+                <span class="fs-3">NEXT</span>
+                <i class="bi bi-arrow-right m-2"></i>
+            </div>
+        </a>
+    </h1>
+</div>
+
+
+<div class="text-center">
+    <h1>Your dashboard with expenses</h1>
+    <div class="d-flex justify-content-center flex-row">
+        <div class="w-75">
+            <canvas id="myChart"></canvas>
+        </div>
+        <div class="w-25">
+            <canvas id="myChart2"></canvas>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(Json.Serialize(Model.Select(x => x.Name))),
+                datasets: [{
+                    label: 'Your expenses',
+                    data: @Html.Raw(Json.Serialize(Model.Select(x => x.Amount))),
+                    backgroundColor: [
+                        '#B6A6E9',
+                        '#876FD4',
+                        '#21134D',
+                        '#5E40BE',
+                        '#3D2785',
+                    ],
+                }],
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                    }
+                }
+            }
+        });
+
+        var ctx2 = document.getElementById('myChart2').getContext('2d');
+        var myChart2 = new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: @Html.Raw(Json.Serialize(categoryChart.Select(x => x.Key))),
+                datasets: [{
+                    label: 'Your expenses',
+                    data: @Html.Raw(Json.Serialize(categoryChart.Select(x => x.Value))),
+                    backgroundColor: [
+                        '#B6A6E9',
+                        '#876FD4',
+                        '#21134D',
+                        '#5E40BE',
+                        '#3D2785',
+                    ],
+                }],
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                    }
+                }
+            }
+        });
+    </script>
+
+
+
+    
+</div>

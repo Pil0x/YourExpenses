@@ -1,0 +1,134 @@
+﻿@model IEnumerable<Expense>
+
+@{
+    ViewData["Title"] = "Expenses";
+    var expenses = Model.Where(x => x.IsSubscription == false);
+    var subscriptions = Model.Where(x => x.IsSubscription == true);
+    var allExpenses = Model;
+}
+
+<div class="d-flex flex-row justify-content-between">
+    <h1>
+        <a asp-action="Index" class="text-reset text-decoration-none" asp-route-month="@ViewBag.PreviousMonth" asp-route-year="@ViewBag.PreviousYear">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-arrow-left m-2"></i>
+                <span class="fs-3">PREV</span>
+            </div>
+        </a>
+    </h1>
+    <h1 class="text-center">Expenses of @ViewBag.Month/@ViewBag.Year</h1>
+    <h1>
+        <a asp-action="Index" class="text-reset text-decoration-none" asp-route-month="@ViewBag.NextMonth" asp-route-year="@ViewBag.NextYear">
+            <div class="d-flex align-items-center">
+                <span class="fs-3">NEXT</span>
+                <i class="bi bi-arrow-right m-2"></i>
+            </div>
+        </a>
+    </h1>
+</div>
+
+<p class="d-flex flex-column justify-content-center my-5">
+    <a asp-action="Create" class="btn text-white" style="background-color: #5E40BE">Create new</a>
+</p>
+
+<table class="table table-hover table-borderless">
+    <thead>
+        <tr class="bg-light">
+            <th></th>
+            <th class="col-md-2 text-center">
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </th>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.Category)
+            </th>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.Amount)
+            </th>
+            <th class="col-md-2"></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (subscriptions.Any())
+        {
+            <tr>
+                <th colspan="6" class="pt-3 shadow-none">
+                    Subscriptions
+                </th>
+            </tr>
+            @foreach (var item in subscriptions)
+            {
+                <tr>
+                    <td class="shadow-none"></td>
+                    <td class="border-start border-end text-center">
+                        @(item.CreatedAt.ToString("dd.MM.yyyy HH:mm"))
+                    </td>
+                    <td class="border-start border-end">
+                        @Html.DisplayFor(modelItem => item.Category.Name)
+                    </td>
+                    <td class="border-start border-end">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td class="text-center border-start border-end">
+                        @Html.DisplayFor(modelItem => item.Amount) zł
+                    </td>
+                    <td class="border-start border-end ">
+                        <div class="d-flex gap-3 justify-content-end">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="bi bi-eye-fill" style="color: #5E40BE"></a>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="bi bi-pencil-square" style="color: #5E40BE"></a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="bi bi-trash-fill" style="color: #5E40BE"></a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        }
+        @if (expenses.Any())
+        {
+            <tr>
+                <th colspan="6" class="pt-3 shadow-none">
+                    Expenses
+                </th>
+            </tr>
+            @foreach (var item in expenses)
+            {
+                <tr>
+                    <td class="shadow-none"></td>
+                    <td class="border-start border-end text-center">
+                        @(item.CreatedAt.ToString("dd.MM.yyyy HH:mm"))
+                    </td>
+                    <td class="border-start border-end">
+                        @Html.DisplayFor(modelItem => item.Category.Name)
+                    </td>
+                    <td class="border-start border-end">
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td class="text-center">
+                        @Html.DisplayFor(modelItem => item.Amount) zł
+                    </td>
+                    <td class="border-start border-end">
+                        <div class="d-flex gap-3 justify-content-end">
+                            <a asp-action="Details" asp-route-id="@item.Id" class="bi bi-eye-fill" style="color: #5E40BE"></a>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="bi bi-pencil-square" style="color: #5E40BE"></a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="bi bi-trash-fill" style="color: #5E40BE"></a>
+                        </div>
+                    </td>
+                </tr>
+
+            }
+            @if (allExpenses.Any())
+            {
+                <tr class="bg-light">
+                    <td class="bg-white shadow-none"></td>
+                    <td colspan="3" class="text-center border-start border-bottom shadow-none"><b>Suma</b></td>
+                    <td class="text-center border-bottom shadow-none">@allExpenses.Select(x => x.Amount).Sum() zł</td>
+                    <td class="border-end border-bottom shadow-none"></td>
+                </tr>
+            }
+        }
+
+
+    </tbody>
+</table>

@@ -1,0 +1,90 @@
+﻿@model IEnumerable<Category>
+
+@{
+    ViewData["Title"] = "Categories";
+    var categorySum = ViewBag.CategorySum as Dictionary<int, decimal>;
+}
+
+<div class="d-flex flex-row justify-content-between">
+    <h1>
+        <a asp-action="Index" class="text-reset text-decoration-none" asp-route-month="@ViewBag.PreviousMonth" asp-route-year="@ViewBag.PreviousYear">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-arrow-left m-2"></i>
+                <span class="fs-3">PREV</span>
+            </div>
+        </a>
+    </h1>
+    <h1 class="text-center">Categories of @ViewBag.Month/@ViewBag.Year</h1>
+    <h1>
+        <a asp-action="Index" class="text-reset text-decoration-none" asp-route-month="@ViewBag.NextMonth" asp-route-year="@ViewBag.NextYear">
+            <div class="d-flex align-items-center">
+                <span class="fs-3">NEXT</span>
+                <i class="bi bi-arrow-right m-2"></i>
+            </div>
+        </a>
+    </h1>
+</div>
+
+<p class="d-flex flex-column justify-content-center my-5">
+    <a asp-action="Create" class="btn text-white" style="background-color: #5E40BE">Create new</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th class="text-center">
+                Summary
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td class="text-center">
+                    @{
+                        var sum = categorySum?.FirstOrDefault(x => x.Key == item.Id).Value;
+                        if(sum != null && sum > 0)
+                        {
+                            <span>@sum zł</span>
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
+                    }
+                </td>
+                <td>
+                    <div class="d-flex gap-3 justify-content-end">
+                        @if (item.UserId != null)
+                        {
+                            <a asp-action="Details" asp-route-id="@item.Id" class="bi bi-eye-fill" style="color: #5E40BE"></a>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="bi bi-pencil-square" style="color: #5E40BE"></a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="bi bi-trash-fill" style="color: #5E40BE"></a>
+                        }
+                        else
+                        {
+                            <a asp-action="Details" asp-route-id="@item.Id" class="bi bi-eye-fill" style="color: #5E40BE"></a>
+                        }
+                    </div>
+                </td>
+            </tr>
+        }
+        <tr class="bg-light border-white">
+            <td class="text-center">
+                <strong>Total</strong>
+            </td>
+            <td class="text-center">
+                <strong>@(categorySum?.Sum(x => x.Value) ?? 0) zł</strong>
+            </td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>

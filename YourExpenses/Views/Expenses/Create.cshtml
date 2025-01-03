@@ -1,0 +1,80 @@
+﻿@model             Expense
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Expense</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Category" class="control-label"></label>
+                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Amount" class="control-label"></label>
+                <input asp-for="Amount" class="form-control" />
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedAt" class="control-label"></label>
+                <input asp-for="CreatedAt" class="form-control" />
+                <span asp-validation-for="CreatedAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check my-3">
+                <label class="form-check-label">
+                    <input class="form-check-input" id="isSubscription" asp-for="IsSubscription" /> @Html.DisplayNameFor(model => model.IsSubscription)
+                </label>
+            </div>
+            <div id="subscriptionDetails" class="form-group" style="display:none;">
+                <label asp-for="EndOfSubscription" class="control-label"></label>
+                <input asp-for="EndOfSubscription" class="form-control" />
+                <span asp-validation-for="EndOfSubscription" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mt-3">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const isSubscriptionCheckbox = document.getElementById('isSubscription');
+        const subscriptionDetails = document.getElementById('subscriptionDetails');
+
+        // Ustaw widoczność podczas ładowania strony
+        subscriptionDetails.style.display = isSubscriptionCheckbox.checked ? 'block' : 'none';
+
+        // Dodaj obsługę zdarzenia zmiany
+        isSubscriptionCheckbox.addEventListener('change', function () {
+            subscriptionDetails.style.display = this.checked ? 'block' : 'none';
+        });
+    });
+</script>
